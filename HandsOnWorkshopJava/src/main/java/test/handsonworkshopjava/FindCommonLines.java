@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
@@ -39,9 +40,9 @@ public class FindCommonLines {
 	public static void main(String[] args) {
 		ArrayList<String> inputArgs = new ArrayList<String>(Arrays.asList(args));
 		FindCommonLines findCommonLines = new FindCommonLines();
-		ArrayList<String> inputFile1 = null;
-		ArrayList<String> inputFile2 = null;
-		ArrayList<String> outputFile = null;
+		ArrayList<String> inputList1 = null;
+		ArrayList<String> inputList2 = null;
+		ArrayList<String> outputList = null;
 		
 		if (!findCommonLines.isInputValid(inputArgs)) {
 			System.out.println("Wrong input parameters");
@@ -49,11 +50,23 @@ public class FindCommonLines {
 		}
 		
 		try {
-			inputFile1 = findCommonLines.readFileToArrayliArrayList(inputArgs.get(0));
-			inputFile2 = findCommonLines.readFileToArrayliArrayList(inputArgs.get(1));
-			outputFile = new ArrayList<String>(inputFile1);
-			outputFile.retainAll(inputFile2);
-			FileUtils.writeLines(new File(inputArgs.get(2)), outputFile);
+			System.out.println("Read file 1");
+			inputList1 = findCommonLines.readFileToArrayliArrayList(inputArgs.get(0));
+			System.out.println("Read file 2");
+			inputList2 = findCommonLines.readFileToArrayliArrayList(inputArgs.get(1));
+			System.out.println("Compare file 1 and file 2");
+			outputList = new ArrayList<String>(inputList1);
+			outputList.retainAll(inputList2);
+			System.out.println("Sort lexicographically the resulting file");
+			Collections.sort(outputList, new Comparator<String>() {
+	            @Override
+	            public int compare(String a, String b) {
+	                return a.compareTo(b);
+	            }
+	        });
+			System.out.println("Write out file");
+			FileUtils.writeLines(new File(inputArgs.get(2)), outputList);
+			
 		} catch (FileNotFoundException e) {
 			System.out.print("Something went wrong with reading of the input files");
 			e.printStackTrace();
@@ -62,6 +75,7 @@ public class FindCommonLines {
 			System.out.print("Something went wrong with writing the output file");
 			e.printStackTrace();
 		}
+		System.out.println("Output file writen");
 	}
 
 	/**
